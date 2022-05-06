@@ -36,15 +36,15 @@ provider:
           Action:
             - "es:*"
           Resource: "*"
-#        - Effect: "Allow"
-#          Action:
-#            - "s3:PutObject"
-#          Resource:
-#            Fn::Join:
-#              - ""
-#              - - "arn:aws:s3:::"
-#                - "Ref" : "ServerlessDeploymentBucket"
-#                - "/*"
+        - Effect: "Allow"
+          Action:
+            - "s3:PutObject"
+          Resource:
+            Fn::Join:
+              - ""
+              - - "arn:aws:s3:::"
+                - "Ref" : "backupBucket"
+                - "/*"
 
 # you can define service wide environment variables here
 #  environment:
@@ -102,12 +102,12 @@ functions:
 #      variable2: value2
 
 # you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
+resources:
+  Resources:
+    backupBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: cae-opensearch-data-backup-dev
 #  Outputs:
 #     NewOutput:
 #       Description: "Description for the output"
