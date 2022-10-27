@@ -7,9 +7,9 @@ const AWS = require('aws-sdk');
 
 module.exports.start = async (event) => {
 
-  const items = await getQueryItems( process.env.SEARCHINDEX, process.env.DELETEAFTER );
+  //const items = await getQueryItems( process.env.SEARCHINDEX, process.env.DELETEAFTER );
 
-  await saveToS3( items );
+  //await saveToS3( items );
 
   const result = await deleteWithRange(process.env.SEARCHINDEX, process.env.DELETEAFTER );
   return {
@@ -60,7 +60,7 @@ async function getQueryItems(searchIndex, deleteAfter){
       body:{
         query: {
           range:{
-            updated_at:{
+            time:{
               lte: deleteAfter
             }
           }
@@ -68,7 +68,7 @@ async function getQueryItems(searchIndex, deleteAfter){
       }
     });
 
-    return items?.body?.hits?.hits ; 
+    return items.body.hits ? items.body.hits.hits : []; 
 
   }catch( error ){
     console.log( error );
@@ -84,7 +84,7 @@ async function deleteWithRange( searchIndex, deleteAfter ){
         body: {
           query: {
             range: {
-              updated_at: {
+              time: {
                 lte: deleteAfter 
               }
               
@@ -93,7 +93,7 @@ async function deleteWithRange( searchIndex, deleteAfter ){
         }
     });
 
-    console.log( result )
+    console.dir( result );
 
   }catch( error ){
     console.log( error );
@@ -121,5 +121,5 @@ async function saveToS3(data) {
 
   console.log( uploadedDocument.Location );
 
-  return uploadedDocument?.Location ; 
+  return uploadedDocument.Location ; 
 }
